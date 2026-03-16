@@ -1,0 +1,30 @@
+{
+  "name": "ai-ds-event-management",
+  "version": "1.0.0",
+  "description": "AI & DS Department Event Management System",
+  "main": "server.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd backend && npm run dev",
+    "client": "cd frontend && npm start",
+    "build": "cd frontend && npm run build",
+    "install-deps": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "check-mongodb": "node check-mongodb.js",
+    "setup": "npm run install-deps && npm run check-mongodb"
+  },
+  "keywords": [
+    "event-management",
+    "mern",
+    "ai-ds"
+  ],
+  "author": "AI & DS Department",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "axios": "^1.13.6",
+    "dotenv": "^16.3.1",
+    "mongoose": "^8.0.3"
+  }
+}
