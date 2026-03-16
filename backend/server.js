@@ -37,6 +37,36 @@ app.use(limiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Initialize database connection
+let isConnected = false;
+
+const initializeDB = async () => {
+  if (!isConnected) {
+    try {
+      await connectDB();
+      isConnected = true;
+      console.log('✅ Database connection established!');
+    } catch (error) {
+      console.error('❌ Database connection failed:', error.message);
+      throw error;
+    }
+  }
+};
+
+// Middleware to ensure DB connection
+app.use(async (req, res, next) => {
+  try {
+    await initializeDB();
+    next();
+  } catch (error) {
+    res.status(503).json({
+      success: false,
+      message: 'Database connection failed',
+      error: error.message
+    });
+  }
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
@@ -125,36 +155,41 @@ app.use('*', (req, res) => {
   });
 });
 
-// Start server function
-const startServer = async () => {
-  console.log('🚀 Starting AI & DS Event Management Server...');
-  console.log('📊 Environment:', process.env.NODE_ENV || 'development');
-  
-  // Connect to MongoDB
-  try {
-    await connectDB();
-    console.log('✅ Database connection established!');
-  } catch (error) {
-    console.error('❌ Database connection failed:', error.message);
-    console.log('⚠️ Server will not start without database connection');
-    process.exit(1);
-  }
-  
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
-    console.log('\n🎉 Server Started Successfully!');
-    console.log(`🌐 Server running on port ${PORT}`);
-    console.log(`📍 API URL: http://localhost:${PORT}/api`);
-    console.log(`🏥 Health Check: http://localhost:${PORT}/api/health`);
-    console.log(`📊 DB Status: http://localhost:${PORT}/api/db-status`);
-    console.log('\n📋 Available Endpoints:');
-    console.log('   POST /api/auth/login - Admin login');
-    console.log('   GET  /api/events - Get all events');
-    console.log('   POST /api/events - Create event (admin)');
-    console.log('   POST /api/upload/single - Upload image (admin)');
-    console.log('\n✅ Ready to accept requests!');
-  });
-};
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  const startServer = async () => {
+    console.log('🚀 Starting AI & DS Event Management Server...');
+    console.log('📊 Environment:', process.env.NODE_ENV || 'development');
+    
+    // Connect to MongoDB
+    try {
+      await connectDB();
+      console.log('✅ Database connection established!');
+    } catch (error) {
+      console.error('❌ Database connection failed:', error.message);
+      console.log('⚠️ Server will not start without database connection');
+      process.exit(1);
+    }
+    
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log('\n🎉 Server Started Successfully!');
+      console.log(`🌐 Server running on port ${PORT}`);
+      console.log(`📍 API URL: http://localhost:${PORT}/api`);
+      console.log(`🏥 Health Check: http://localhost:${PORT}/api/health`);
+      console.log(`📊 DB Status: http://localhost:${PORT}/api/db-status`);
+      console.log('\n📋 Available Endpoints:');
+      console.log('   POST /api/auth/login - Admin login');
+      console.log('   GET  /api/events - Get all events');
+      console.log('   POST /api/events - Create event (admin)');
+      console.log('   POST /api/upload/single - Upload image (admin)');
+      console.log('\n✅ Ready to accept requests!');
+    });
+  };
 
-// Start the server
-startServer();
+  // Start the server
+  startServer();
+}
+
+// Export for Vercel
+module.exports = app;
