@@ -9,7 +9,14 @@ const router = express.Router();
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true
+});
+
+console.log('☁️ Cloudinary configured:', {
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME ? 'Set' : 'Missing',
+  api_key: process.env.CLOUDINARY_API_KEY ? 'Set' : 'Missing',
+  api_secret: process.env.CLOUDINARY_API_SECRET ? 'Set' : 'Missing'
 });
 
 // Configure multer for memory storage
@@ -40,19 +47,33 @@ const upload = multer({
 // Helper function to upload to Cloudinary
 const uploadToCloudinary = (buffer, options = {}) => {
   return new Promise((resolve, reject) => {
+    // Ensure Cloudinary is configured
+    if (!cloudinary.config().cloud_name) {
+      cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET
+      });
+    }
+
     const defaultOptions = {
       folder: 'ai-ds-events',
       quality: 'auto',
       format: 'auto',
+      resource_type: 'image',
       ...options
     };
+
+    console.log('🔄 Cloudinary upload options:', defaultOptions);
 
     cloudinary.uploader.upload_stream(
       defaultOptions,
       (error, result) => {
         if (error) {
-          reject(error);
+          console.error('❌ Cloudinary error:', error);
+          reject(new Error(`Cloudinary upload failed: ${error.message}`));
         } else {
+          console.log('✅ Cloudinary success:', result.secure_url);
           resolve({
             url: result.secure_url,
             publicId: result.public_id,
