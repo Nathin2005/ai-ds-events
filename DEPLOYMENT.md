@@ -123,8 +123,8 @@ In Render dashboard, go to **Environment** tab and add:
 ```
 NODE_ENV=production
 PORT=10000
-MONGODB_URI=mongodb+srv://admin:yourpassword@ai-ds-events.xxxxx.mongodb.net/ai-ds-events?retryWrites=true&w=majority
-JWT_SECRET=your-super-secret-jwt-key-change-this-in-production-2024
+MONGODB_URI=mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/ai-ds-events?retryWrites=true&w=majority
+JWT_SECRET=aB9xK2mP8qR5vN3wE7yT1uI6oL4sD0fG9hJ2kM5nQ8rV1xC3zA6bE9yW2tU5iO8pL
 JWT_EXPIRE=7d
 CLOUDINARY_CLOUD_NAME=your-cloud-name
 CLOUDINARY_API_KEY=your-api-key
@@ -135,8 +135,9 @@ FRONTEND_URL=https://your-frontend-url.vercel.app
 ```
 
 **Important Notes:**
-- Replace MongoDB URI with your actual connection string
-- Generate a strong JWT_SECRET (use a password generator)
+- Replace MongoDB URI with your actual Atlas connection string
+- Include `/ai-ds-events` database name in the URI
+- Add `?retryWrites=true&w=majority` parameters
 - Use your actual Cloudinary credentials
 - FRONTEND_URL will be updated after frontend deployment
 

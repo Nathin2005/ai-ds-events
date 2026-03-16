@@ -8,13 +8,11 @@ const connectDB = async () => {
     console.log(`🔄 Connecting to ${isLocal ? 'Local' : 'Cloud'} MongoDB...`);
     console.log('📍 URI:', isLocal ? mongoURI : mongoURI.replace(/\/\/.*@/, '//***:***@'));
     
-    // Connection options for better cloud compatibility
+    // Updated connection options for Mongoose 6+
     const options = {
       maxPoolSize: 10,
       serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
-      bufferCommands: false,
-      bufferMaxEntries: 0
+      socketTimeoutMS: 45000
     };
     
     const conn = await mongoose.connect(mongoURI, options);

@@ -24,7 +24,8 @@ const adminSchema = new mongoose.Schema({
   },
   isActive: {
     type: Boolean,
-    default: true
+    default: true,
+    index: true
   },
   lastLogin: {
     type: Date
@@ -40,9 +41,9 @@ const adminSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Indexes
-adminSchema.index({ username: 1 });
-adminSchema.index({ isActive: 1 });
+// Only add additional indexes (username already has unique index)
+// adminSchema.index({ username: 1 }); // Removed duplicate
+// adminSchema.index({ isActive: 1 }); // Moved to field definition
 
 // Virtual for account lock status
 adminSchema.virtual('isLocked').get(function() {
