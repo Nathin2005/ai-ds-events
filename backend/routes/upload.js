@@ -232,6 +232,36 @@ router.delete('/:publicId(*)', auth, async (req, res) => {
   }
 });
 
+// @route   GET /api/upload/debug
+// @desc    Debug upload configuration
+// @access  Private (Admin only)
+router.get('/debug', auth, async (req, res) => {
+  try {
+    res.json({
+      success: true,
+      debug: {
+        cloudinaryConfig: {
+          cloud_name: process.env.CLOUDINARY_CLOUD_NAME ? 'Set' : 'Missing',
+          api_key: process.env.CLOUDINARY_API_KEY ? 'Set' : 'Missing',
+          api_secret: process.env.CLOUDINARY_API_SECRET ? 'Set' : 'Missing'
+        },
+        admin: {
+          id: req.admin._id,
+          username: req.admin.username,
+          role: req.admin.role
+        },
+        environment: process.env.NODE_ENV
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Debug error',
+      error: error.message
+    });
+  }
+});
+
 // @route   GET /api/upload/stats
 // @desc    Get upload statistics
 // @access  Private (Admin only)

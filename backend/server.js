@@ -8,7 +8,6 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const eventRoutes = require('./routes/events');
 const uploadRoutes = require('./routes/upload');
-const testUploadRoutes = require('./routes/test-upload');
 const connectDB = require('./utils/dbConnection');
 
 const app = express();
@@ -48,7 +47,6 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/upload', uploadRoutes);
-app.use('/api/test-upload', testUploadRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
