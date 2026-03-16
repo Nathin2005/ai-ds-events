@@ -72,12 +72,27 @@ const uploadToCloudinary = (buffer, options = {}) => {
 // @access  Private (Admin only)
 router.post('/single', auth, upload.single('image'), async (req, res) => {
   try {
+    console.log('📤 Single upload started');
+    console.log('👤 Admin:', req.admin ? req.admin.username : 'Not authenticated');
+    console.log('📁 File:', req.file ? req.file.originalname : 'No file');
+    
     if (!req.file) {
       return res.status(400).json({
         success: false,
         message: 'No image file provided'
       });
     }
+
+    // Check Cloudinary config
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      console.error('❌ Cloudinary config missing');
+      return res.status(500).json({
+        success: false,
+        message: 'Cloudinary configuration is missing'
+      });
+    }
+
+    console.log('🔄 Uploading to Cloudinary...');
 
     // Upload to Cloudinary with cover image optimization
     const result = await uploadToCloudinary(req.file.buffer, {
@@ -89,13 +104,15 @@ router.post('/single', auth, upload.single('image'), async (req, res) => {
       ]
     });
 
+    console.log('✅ Upload successful:', result.url);
+
     res.json({
       success: true,
       message: 'Image uploaded successfully',
       data: result
     });
   } catch (error) {
-    console.error('Upload error:', error);
+    console.error('❌ Upload error:', error);
     
     if (error.message.includes('File too large')) {
       return res.status(413).json({
@@ -106,7 +123,8 @@ router.post('/single', auth, upload.single('image'), async (req, res) => {
     
     res.status(500).json({
       success: false,
-      message: error.message || 'Error uploading image'
+      message: error.message || 'Error uploading image',
+      error: process.env.NODE_ENV === 'development' ? error.toString() : undefined
     });
   }
 });
@@ -116,6 +134,10 @@ router.post('/single', auth, upload.single('image'), async (req, res) => {
 // @access  Private (Admin only)
 router.post('/multiple', auth, upload.array('images', 10), async (req, res) => {
   try {
+    console.log('📤 Multiple upload started');
+    console.log('👤 Admin:', req.admin ? req.admin.username : 'Not authenticated');
+    console.log('📁 Files:', req.files ? req.files.length : 0);
+    
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({
         success: false,
@@ -123,8 +145,20 @@ router.post('/multiple', auth, upload.array('images', 10), async (req, res) => {
       });
     }
 
+    // Check Cloudinary config
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      console.error('❌ Cloudinary config missing');
+      return res.status(500).json({
+        success: false,
+        message: 'Cloudinary configuration is missing'
+      });
+    }
+
+    console.log('🔄 Uploading multiple files to Cloudinary...');
+
     // Upload all files to Cloudinary
-    const uploadPromises = req.files.map(file => {
+    const uploadPromises = req.files.map((file, index) => {
+      console.log(`📤 Uploading file ${index + 1}: ${file.originalname}`);
       return uploadToCloudinary(file.buffer, {
         folder: 'ai-ds-events/gallery',
         transformation: [
@@ -136,6 +170,7 @@ router.post('/multiple', auth, upload.array('images', 10), async (req, res) => {
     });
 
     const results = await Promise.all(uploadPromises);
+    console.log('✅ All uploads successful');
 
     res.json({
       success: true,
@@ -143,7 +178,7 @@ router.post('/multiple', auth, upload.array('images', 10), async (req, res) => {
       data: results
     });
   } catch (error) {
-    console.error('Multiple upload error:', error);
+    console.error('❌ Multiple upload error:', error);
     
     if (error.message.includes('File too large')) {
       return res.status(413).json({
@@ -154,7 +189,8 @@ router.post('/multiple', auth, upload.array('images', 10), async (req, res) => {
     
     res.status(500).json({
       success: false,
-      message: error.message || 'Error uploading images'
+      message: error.message || 'Error uploading images',
+      error: process.env.NODE_ENV === 'development' ? error.toString() : undefined
     });
   }
 });
