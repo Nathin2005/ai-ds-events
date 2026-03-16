@@ -59,10 +59,12 @@ const uploadToCloudinary = (buffer, options = {}) => {
     const defaultOptions = {
       folder: 'ai-ds-events',
       quality: 'auto',
-      format: 'auto',
       resource_type: 'image',
       ...options
     };
+
+    // Remove format: 'auto' as it's causing the error
+    delete defaultOptions.format;
 
     console.log('🔄 Cloudinary upload options:', defaultOptions);
 
@@ -120,8 +122,7 @@ router.post('/single', auth, upload.single('image'), async (req, res) => {
       folder: 'ai-ds-events/covers',
       transformation: [
         { width: 1200, height: 800, crop: 'limit' },
-        { quality: 'auto:good' },
-        { format: 'auto' }
+        { quality: 'auto:good' }
       ]
     });
 
@@ -184,8 +185,7 @@ router.post('/multiple', auth, upload.array('images', 10), async (req, res) => {
         folder: 'ai-ds-events/gallery',
         transformation: [
           { width: 1000, height: 750, crop: 'limit' },
-          { quality: 'auto:good' },
-          { format: 'auto' }
+          { quality: 'auto:good' }
         ]
       });
     });
