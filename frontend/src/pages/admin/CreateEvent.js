@@ -201,9 +201,11 @@ const CreateEvent = () => {
                     required
                     value={formData.eventDate}
                     onChange={handleChange}
-                    min={new Date().toISOString().split('T')[0]}
                     className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                   />
+                  <p className="text-xs text-secondary-500 mt-1">
+                    You can select any date - past, present, or future
+                  </p>
                 </div>
 
                 {/* Venue */}
