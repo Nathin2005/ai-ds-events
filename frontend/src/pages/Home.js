@@ -15,16 +15,24 @@ const Home = () => {
     const fetchEvents = async () => {
       try {
         const [allEventsRes, upcomingRes] = await Promise.all([
-          eventsAPI.getAll(),
+          eventsAPI.getAll({ sort: 'date_desc' }),
           eventsAPI.getUpcoming()
         ]);
 
         if (allEventsRes.data.success) {
-          setRecentEvents(allEventsRes.data.data.slice(0, 3));
+          // Sort by date (newest first) and take first 3
+          const sortedEvents = allEventsRes.data.data.sort((a, b) => {
+            return new Date(b.eventDate) - new Date(a.eventDate);
+          });
+          setRecentEvents(sortedEvents.slice(0, 3));
         }
 
         if (upcomingRes.data.success) {
-          setUpcomingEvents(upcomingRes.data.data.slice(0, 3));
+          // Sort upcoming events by date (earliest first)
+          const sortedUpcoming = upcomingRes.data.data.sort((a, b) => {
+            return new Date(a.eventDate) - new Date(b.eventDate);
+          });
+          setUpcomingEvents(sortedUpcoming.slice(0, 3));
         }
       } catch (error) {
         console.error('Error fetching events:', error);

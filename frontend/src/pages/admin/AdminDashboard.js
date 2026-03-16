@@ -21,10 +21,13 @@ const AdminDashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const allEventsRes = await eventsAPI.getAll();
+      const allEventsRes = await eventsAPI.getAll({ sort: 'date_desc' });
 
       if (allEventsRes.data.success) {
-        const eventsData = allEventsRes.data.data;
+        // Sort events by date (newest first)
+        const eventsData = allEventsRes.data.data.sort((a, b) => {
+          return new Date(b.eventDate) - new Date(a.eventDate);
+        });
         setEvents(eventsData);
         
         const now = new Date();

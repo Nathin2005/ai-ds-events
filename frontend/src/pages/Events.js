@@ -16,13 +16,23 @@ const Events = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = filter === 'upcoming' 
-          ? await eventsAPI.getUpcoming()
-          : await eventsAPI.getAll();
+        let response;
+        if (filter === 'upcoming') {
+          response = await eventsAPI.getUpcoming();
+        } else if (filter === 'past') {
+          response = await eventsAPI.getPast();
+        } else {
+          // Get all events and sort by date
+          response = await eventsAPI.getAll({ sort: 'date_desc' });
+        }
 
         if (response.data.success) {
-          setEvents(response.data.data);
-          setFilteredEvents(response.data.data);
+          // Sort events by date (newest first)
+          const sortedEvents = response.data.data.sort((a, b) => {
+            return new Date(b.eventDate) - new Date(a.eventDate);
+          });
+          setEvents(sortedEvents);
+          setFilteredEvents(sortedEvents);
         }
       } catch (error) {
         console.error('Error fetching events:', error);
@@ -59,11 +69,15 @@ const Events = () => {
             className="text-center mb-12"
           >
             <h1 className="text-4xl md:text-5xl font-display font-bold text-gradient mb-4">
-              {filter === 'upcoming' ? 'Upcoming Events' : 'AI & DS Department Events'}
+              {filter === 'upcoming' ? 'Upcoming Events' : 
+               filter === 'past' ? 'Past Events' : 
+               'AI & DS Department Events'}
             </h1>
             <p className="text-lg text-secondary-600 max-w-2xl mx-auto">
               {filter === 'upcoming' 
                 ? 'Discover exciting upcoming events and opportunities in AI & Data Science'
+                : filter === 'past'
+                ? 'Explore our archive of completed events, workshops, and seminars'
                 : 'Explore our comprehensive collection of events, workshops, and seminars conducted by the AI & DS Department'
               }
             </p>
@@ -108,7 +122,18 @@ const Events = () => {
                 }`}
               >
                 <FiClock className="w-4 h-4" />
-                <span>Upcoming Events</span>
+                <span>Upcoming</span>
+              </button>
+              <button
+                onClick={() => handleFilterChange('past')}
+                className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                  filter === 'past'
+                    ? 'bg-primary-600 text-white shadow-lg'
+                    : 'bg-white text-secondary-700 hover:bg-secondary-50 border border-secondary-200'
+                }`}
+              >
+                <FiCalendar className="w-4 h-4" />
+                <span>Past Events</span>
               </button>
             </div>
           </div>

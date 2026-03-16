@@ -51,7 +51,7 @@ router.get('/', [
     // Calculate pagination
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
-    // Execute query
+    // Execute query with date sorting (newest first for all events)
     const [events, totalCount] = await Promise.all([
       Event.find(query)
         .sort(sortObj)
