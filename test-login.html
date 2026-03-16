@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Admin Login</title>
+</head>
+<body>
+    <h1>Test Admin Login</h1>
+    <button onclick="testLogin()">Test Login</button>
+    <div id="result"></div>
+
+    <script>
+        async function testLogin() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing login...';
+            
+            try {
+                console.log('Testing backend connection...');
+                
+                // Test 1: Health Check
+                const healthResponse = await fetch('https://ai-ds-backend-b2vf.onrender.com/api/health');
+                const healthData = await healthResponse.json();
+                console.log('Health Check:', healthData);
+                
+                // Test 2: Login Request
+                const loginResponse = await fetch('https://ai-ds-backend-b2vf.onrender.com/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: 'admin123'
+                    })
+                });
+                
+                console.log('Login Response Status:', loginResponse.status);
+                console.log('Login Response Headers:', loginResponse.headers);
+                
+                if (loginResponse.ok) {
+                    const loginData = await loginResponse.json();
+                    console.log('Login Success:', loginData);
+                    resultDiv.innerHTML = `
+                        <h3>✅ Login Successful!</h3>
+                        <pre>${JSON.stringify(loginData, null, 2)}</pre>
+                    `;
+                } else {
+                    const errorData = await loginResponse.json();
+                    console.log('Login Error:', errorData);
+                    resultDiv.innerHTML = `
+                        <h3>❌ Login Failed</h3>
+                        <p>Status: ${loginResponse.status}</p>
+                        <pre>${JSON.stringify(errorData, null, 2)}</pre>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('Network Error:', error);
+                resultDiv.innerHTML = `
+                    <h3>❌ Network Error</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
