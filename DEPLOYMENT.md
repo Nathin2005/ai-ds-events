@@ -134,11 +134,12 @@ ADMIN_PASSWORD=admin123
 FRONTEND_URL=https://your-frontend-url.vercel.app
 ```
 
-**Important Notes:**
+**⚠️ Important Notes:**
 - Replace MongoDB URI with your actual Atlas connection string
 - Include `/ai-ds-events` database name in the URI
 - Add `?retryWrites=true&w=majority` parameters
 - Use your actual Cloudinary credentials
+- **FRONTEND_URL**: Just the domain, NO `/api` at the end
 - FRONTEND_URL will be updated after frontend deployment
 
 ### 3.4 Deploy
