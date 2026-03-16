@@ -174,16 +174,7 @@ router.post('/', [
     .withMessage('Event name cannot exceed 100 characters'),
   body('eventDate')
     .isISO8601()
-    .withMessage('Valid event date is required')
-    .custom((value) => {
-      const eventDate = new Date(value);
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-      if (eventDate < now) {
-        throw new Error('Event date cannot be in the past');
-      }
-      return true;
-    }),
+    .withMessage('Valid event date is required'),
   body('shortDescription')
     .trim()
     .notEmpty()
