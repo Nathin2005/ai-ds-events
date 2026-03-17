@@ -10,7 +10,7 @@ const router = express.Router();
 // @access  Public
 router.get('/', [
   query('status').optional().isIn(['published', 'draft', 'cancelled']),
-  query('limit').optional().isInt({ min: 1, max: 100 }),
+  query('limit').optional().isInt({ min: 1, max: 500 }),
   query('page').optional().isInt({ min: 1 }),
   query('sort').optional().isIn(['date_asc', 'date_desc', 'name_asc', 'name_desc'])
 ], async (req, res) => {
@@ -24,7 +24,7 @@ router.get('/', [
       });
     }
 
-    const { status = 'published', limit = 20, page = 1, sort = 'date_desc' } = req.query;
+    const { status = 'published', limit = 100, page = 1, sort = 'date_desc' } = req.query;
     
     // Build query
     const query = { status };

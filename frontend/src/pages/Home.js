@@ -15,7 +15,7 @@ const Home = () => {
     const fetchEvents = async () => {
       try {
         const [allEventsRes, upcomingRes] = await Promise.all([
-          eventsAPI.getAll({ sort: 'date_desc' }),
+          eventsAPI.getAll({ sort: 'date_desc', limit: 100 }),
           eventsAPI.getUpcoming()
         ]);
 

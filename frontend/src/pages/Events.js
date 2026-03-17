@@ -23,7 +23,7 @@ const Events = () => {
           response = await eventsAPI.getPast();
         } else {
           // Get all events and sort by date
-          response = await eventsAPI.getAll({ sort: 'date_desc' });
+          response = await eventsAPI.getAll({ sort: 'date_desc', limit: 500 });
         }
 
         if (response.data.success) {
