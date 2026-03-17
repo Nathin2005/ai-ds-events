@@ -152,18 +152,6 @@ const AdminLogin = () => {
               )}
             </button>
           </form>
-
-          {/* Default Credentials Info */}
-          <div className="mt-6 p-4 bg-secondary-50 rounded-lg border border-secondary-200">
-            <h4 className="text-sm font-semibold text-secondary-700 mb-2">Default Credentials:</h4>
-            <div className="text-sm text-secondary-600 space-y-1">
-              <p><span className="font-medium">Username:</span> admin</p>
-              <p><span className="font-medium">Password:</span> admin123</p>
-            </div>
-            <p className="text-xs text-secondary-500 mt-2">
-              ⚠️ Please change these credentials after first login
-            </p>
-          </div>
         </motion.div>
 
         {/* Footer */}
