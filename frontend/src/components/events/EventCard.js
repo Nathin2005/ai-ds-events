@@ -9,9 +9,10 @@ const EventCard = ({ event, showUpcomingBadge = false }) => {
 
   return (
     <motion.div
-      whileHover={{ y: -5, scale: 1.02 }}
-      transition={{ duration: 0.3 }}
-      className="card card-hover group bg-white shadow-lg border border-secondary-100 overflow-hidden"
+      whileHover={{ y: -8, scale: 1.03 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="card card-hover group bg-white shadow-lg border border-secondary-100 overflow-hidden hover:shadow-2xl transition-all duration-300"
     >
       {/* Event Image */}
       <div className="relative overflow-hidden h-48">
@@ -60,7 +61,7 @@ const EventCard = ({ event, showUpcomingBadge = false }) => {
         {/* View Details Button */}
         <Link
           to={`/events/${event._id}`}
-          className="inline-flex items-center justify-center w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 group-hover:shadow-lg"
+          className="inline-flex items-center justify-center w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 group-hover:shadow-lg hover:scale-105 transform"
         >
           View Details
           <FiArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />

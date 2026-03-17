@@ -117,7 +117,7 @@ const AdminDashboard = () => {
           </div>
           <Link
             to="/admin/events/create"
-            className="btn-primary flex items-center space-x-2 mt-4 md:mt-0 shadow-lg hover:shadow-xl transition-shadow duration-200"
+            className="btn-primary flex items-center space-x-2 mt-4 md:mt-0 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 transform"
           >
             <FiPlus className="w-5 h-5" />
             <span>Create New Event</span>
@@ -134,7 +134,8 @@ const AdminDashboard = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: index * 0.1 }}
-                className="card p-6 hover:shadow-lg transition-shadow duration-200"
+                whileHover={{ y: -5, scale: 1.05 }}
+                className="card p-6 hover:shadow-xl transition-all duration-300 cursor-pointer"
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${
@@ -230,7 +231,7 @@ const AdminDashboard = () => {
                   {currentEvents.map((event) => {
                     const isUpcoming = new Date(event.eventDate) >= new Date();
                     return (
-                      <tr key={event._id} className="hover:bg-secondary-50 transition-colors duration-150">
+                      <tr key={event._id} className="hover:bg-secondary-50 transition-all duration-200 hover:scale-[1.01] hover:shadow-sm">
                         <td className="px-6 py-4">
                           <div className="flex items-center">
                             <img

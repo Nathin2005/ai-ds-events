@@ -83,7 +83,8 @@ const AdminLogin = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="card p-8 shadow-xl"
+          whileHover={{ y: -5, scale: 1.02 }}
+          className="card p-8 shadow-xl hover:shadow-2xl transition-all duration-300"
         >
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Username Field */}
@@ -100,7 +101,7 @@ const AdminLogin = () => {
                   required
                   value={formData.username}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                  className="w-full pl-10 pr-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 hover:border-primary-300 hover:shadow-md"
                   placeholder="Enter your username"
                   disabled={loading}
                 />
@@ -121,7 +122,7 @@ const AdminLogin = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-12 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                  className="w-full pl-10 pr-12 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 hover:border-primary-300 hover:shadow-md"
                   placeholder="Enter your password"
                   disabled={loading}
                 />
@@ -140,7 +141,7 @@ const AdminLogin = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn-primary py-3 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              className="w-full btn-primary py-3 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105 hover:shadow-lg transform"
             >
               {loading ? (
                 <div className="flex items-center justify-center">

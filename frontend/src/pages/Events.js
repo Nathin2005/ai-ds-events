@@ -104,10 +104,10 @@ const Events = () => {
             <div className="flex space-x-2">
               <button
                 onClick={() => handleFilterChange('all')}
-                className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105 transform ${
                   filter === 'all'
-                    ? 'bg-primary-600 text-white shadow-lg'
-                    : 'bg-white text-secondary-700 hover:bg-secondary-50 border border-secondary-200'
+                    ? 'bg-primary-600 text-white shadow-lg hover:shadow-xl'
+                    : 'bg-white text-secondary-700 hover:bg-secondary-50 border border-secondary-200 hover:border-primary-300 hover:shadow-md'
                 }`}
               >
                 <FiCalendar className="w-4 h-4" />
@@ -115,10 +115,10 @@ const Events = () => {
               </button>
               <button
                 onClick={() => handleFilterChange('upcoming')}
-                className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105 transform ${
                   filter === 'upcoming'
-                    ? 'bg-primary-600 text-white shadow-lg'
-                    : 'bg-white text-secondary-700 hover:bg-secondary-50 border border-secondary-200'
+                    ? 'bg-primary-600 text-white shadow-lg hover:shadow-xl'
+                    : 'bg-white text-secondary-700 hover:bg-secondary-50 border border-secondary-200 hover:border-primary-300 hover:shadow-md'
                 }`}
               >
                 <FiClock className="w-4 h-4" />
@@ -126,10 +126,10 @@ const Events = () => {
               </button>
               <button
                 onClick={() => handleFilterChange('past')}
-                className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105 transform ${
                   filter === 'past'
-                    ? 'bg-primary-600 text-white shadow-lg'
-                    : 'bg-white text-secondary-700 hover:bg-secondary-50 border border-secondary-200'
+                    ? 'bg-primary-600 text-white shadow-lg hover:shadow-xl'
+                    : 'bg-white text-secondary-700 hover:bg-secondary-50 border border-secondary-200 hover:border-primary-300 hover:shadow-md'
                 }`}
               >
                 <FiCalendar className="w-4 h-4" />
