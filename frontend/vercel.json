@@ -4,5 +4,7 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "buildCommand": "CI=false npm run build",
+  "installCommand": "npm install --legacy-peer-deps"
 }
