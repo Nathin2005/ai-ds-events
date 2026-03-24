@@ -28,15 +28,11 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-3 text-secondary-300">
                 <FiMapPin className="w-4 h-4 text-primary-400" />
-                <span>College Campus, AI & DS Department Block</span>
+                <span>Kumaran Kottam Campus, Kannampalayam, Sulur, Coimbatore - 641 402</span>
               </div>
               <div className="flex items-center space-x-3 text-secondary-300">
                 <FiMail className="w-4 h-4 text-primary-400" />
-                <span>aidsept@college.edu</span>
-              </div>
-              <div className="flex items-center space-x-3 text-secondary-300">
-                <FiPhone className="w-4 h-4 text-primary-400" />
-                <span>+91 12345 67890</span>
+                <span>principalcet@rvsgroup.com</span>
               </div>
             </div>
           </div>
