@@ -117,19 +117,14 @@ const Home = () => {
                 <div className="bg-primary-50 p-6 rounded-xl">
                   <h3 className="text-xl font-semibold text-primary-800 mb-3">Department Introduction</h3>
                   <p className="text-secondary-700 leading-relaxed">
-                    The AI & DS Department is at the forefront of technological innovation, 
-                    offering cutting-edge education in Artificial Intelligence, Machine Learning, 
-                    and Data Science. We prepare students for the digital future through hands-on 
-                    learning and research opportunities.
+                   The Department of Artificial Intelligence and Data Science (AI & DS), established in 2022, focuses on emerging technologies and industry-driven innovations. It provides a robust academic and research environment supported by well-equipped laboratories and advanced learning resources to facilitate effective teaching, learning, and research.Founded in 2022, the department integrates theoretical knowledge, hands-on training, and industry collaboration to produce competent, employable, and research-oriented professionals. Since its inception, it has aimed to advance AI and Data Science education in alignment with societal and industry needs.
                   </p>
                 </div>
                 
                 <div className="bg-secondary-50 p-6 rounded-xl">
                   <h3 className="text-xl font-semibold text-secondary-800 mb-3">Vision and Mission</h3>
                   <p className="text-secondary-700 leading-relaxed">
-                    To be a leading center of excellence in AI and Data Science education, 
-                    fostering innovation, research, and developing skilled professionals who 
-                    can drive technological advancement in society.
+                    To impart quality education, promote collaborative research, and graduate industry-ready engineers in the domain of Artificial Intelligence and Data Science for the good of humanity, the mission focuses on being at the forefront of AI and Data Science research across theoretical, application-driven, and regionally relevant areas to meet societal needs. It emphasizes ensuring that AI systems are transparent, unbiased, and aligned with ethical principles to foster fairness and inclusivity, while also making AI tools and data science knowledge accessible to businesses, educators, and individuals worldwide. Additionally, it aims to play a leading role in delivering high-quality Artificial Intelligence and Data Science education across both formal and informal sectors
                   </p>
                 </div>
               </div>
