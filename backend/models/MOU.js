@@ -27,15 +27,15 @@ const mouSchema = new mongoose.Schema({
     type: Date,
     required: [true, 'Valid until date is required']
   },
-  mouDocument: {
+  mouPhotos: [{
     type: String,
     validate: {
       validator: function(v) {
         return !v || /^https?:\/\/.+/i.test(v);
       },
-      message: 'MOU document must be a valid URL'
+      message: 'MOU photo must be a valid URL'
     }
-  },
+  }],
   companyLogo: {
     type: String,
     validate: {

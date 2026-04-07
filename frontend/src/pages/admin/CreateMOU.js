@@ -9,7 +9,7 @@ const CreateMOU = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
-  const [uploadingDocument, setUploadingDocument] = useState(false);
+  const [uploadingPhotos, setUploadingPhotos] = useState(false);
   
   const [formData, setFormData] = useState({
     companyName: '',
@@ -18,7 +18,7 @@ const CreateMOU = () => {
     signingDate: '',
     validUntil: '',
     companyLogo: '',
-    mouDocument: '',
+    mouPhotos: [],
     status: 'active',
     benefits: ['']
   });
@@ -86,31 +86,41 @@ const CreateMOU = () => {
   };
 
   const handleDocumentUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
 
-    // Validate file size (10MB limit for documents)
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error('MOU document must be less than 10MB');
+    // Validate file sizes (5MB limit for images)
+    const oversizedFiles = files.filter(file => file.size > 5 * 1024 * 1024);
+    if (oversizedFiles.length > 0) {
+      toast.error('All MOU photos must be less than 5MB');
       return;
     }
 
     try {
-      setUploadingDocument(true);
-      const response = await uploadAPI.single(file);
+      setUploadingPhotos(true);
+      const response = await uploadAPI.multiple(files);
       if (response.data.success) {
+        const newImages = response.data.data.map(img => img.url);
         setFormData(prev => ({
           ...prev,
-          mouDocument: response.data.data.url
+          mouPhotos: [...prev.mouPhotos, ...newImages]
         }));
-        toast.success('MOU document uploaded successfully');
+        toast.success(`${files.length} photos uploaded successfully`);
       }
     } catch (error) {
       console.error('Upload error:', error);
-      toast.error('Failed to upload MOU document');
+      toast.error('Failed to upload MOU photos');
     } finally {
-      setUploadingDocument(false);
+      setUploadingPhotos(false);
     }
+  };
+
+  const removeMOUPhoto = (index) => {
+    const updatedPhotos = formData.mouPhotos.filter((_, i) => i !== index);
+    setFormData(prev => ({
+      ...prev,
+      mouPhotos: updatedPhotos
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -415,59 +425,70 @@ const CreateMOU = () => {
               </div>
             </div>
 
-            {/* MOU Document */}
+            {/* MOU Photos */}
             <div>
-              <h2 className="text-2xl font-semibold text-secondary-900 mb-6">MOU Document (Optional)</h2>
+              <h2 className="text-2xl font-semibold text-secondary-900 mb-6">MOU Photos (Optional)</h2>
               
-              <div className="border-2 border-dashed border-secondary-300 rounded-xl p-8 text-center">
-                {formData.mouDocument ? (
-                  <div className="space-y-4">
-                    <div className="text-green-600">
-                      <FiUpload className="w-16 h-16 mx-auto mb-4" />
-                      <p className="text-lg font-semibold">✅ Document uploaded successfully</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, mouDocument: '' }))}
-                      className="text-red-600 hover:text-red-700 font-medium"
-                    >
-                      Remove Document
-                    </button>
-                  </div>
-                ) : (
+              <div className="border-2 border-dashed border-secondary-300 rounded-xl p-8">
+                <div className="text-center mb-6">
+                  <FiUpload className="w-12 h-12 text-secondary-400 mx-auto mb-3" />
+                  <h3 className="text-lg font-semibold text-secondary-700 mb-2">Upload MOU Photos</h3>
+                  <p className="text-secondary-500 mb-4">
+                    Add multiple photos related to the MOU signing or partnership (Max 5MB each)
+                  </p>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleDocumentUpload}
+                    className="hidden"
+                    id="photos-upload"
+                    disabled={uploadingPhotos}
+                  />
+                  <label
+                    htmlFor="photos-upload"
+                    className="btn-secondary cursor-pointer inline-flex items-center"
+                  >
+                    {uploadingPhotos ? (
+                      <>
+                        <div className="loading-spinner mr-2"></div>
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <FiUpload className="w-4 h-4 mr-2" />
+                        Choose Photos
+                      </>
+                    )}
+                  </label>
+                  <p className="text-xs text-secondary-400 mt-2">
+                    Maximum file size: 5MB per image
+                  </p>
+                </div>
+
+                {formData.mouPhotos.length > 0 && (
                   <div>
-                    <FiUpload className="w-16 h-16 text-secondary-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-secondary-700 mb-2">Upload MOU Document</h3>
-                    <p className="text-secondary-500 mb-6">
-                      Upload the official MOU document (PDF, DOC, DOCX)
-                    </p>
-                    <input
-                      type="file"
-                      accept=".pdf,.doc,.docx"
-                      onChange={handleDocumentUpload}
-                      className="hidden"
-                      id="document-upload"
-                      disabled={uploadingDocument}
-                    />
-                    <label
-                      htmlFor="document-upload"
-                      className="btn-secondary cursor-pointer inline-flex items-center"
-                    >
-                      {uploadingDocument ? (
-                        <>
-                          <div className="loading-spinner mr-2"></div>
-                          Uploading...
-                        </>
-                      ) : (
-                        <>
-                          <FiUpload className="w-4 h-4 mr-2" />
-                          Choose Document
-                        </>
-                      )}
-                    </label>
-                    <p className="text-xs text-secondary-400 mt-2">
-                      Maximum file size: 10MB
-                    </p>
+                    <h4 className="text-sm font-semibold text-secondary-700 mb-3">
+                      MOU Photos ({formData.mouPhotos.length})
+                    </h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {formData.mouPhotos.map((photo, index) => (
+                        <div key={index} className="relative group">
+                          <img
+                            src={photo}
+                            alt={`MOU Photo ${index + 1}`}
+                            className="w-full h-24 object-cover rounded-lg shadow-sm"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeMOUPhoto(index)}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors duration-200 opacity-0 group-hover:opacity-100"
+                          >
+                            <FiX className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -483,7 +504,7 @@ const CreateMOU = () => {
               </Link>
               <button
                 type="submit"
-                disabled={loading || uploadingLogo || uploadingDocument}
+                disabled={loading || uploadingLogo || uploadingPhotos}
                 className="btn-primary px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
@@ -491,7 +512,7 @@ const CreateMOU = () => {
                     <div className="loading-spinner mr-2"></div>
                     Creating MOU...
                   </div>
-                ) : uploadingLogo || uploadingDocument ? (
+                ) : uploadingLogo || uploadingPhotos ? (
                   <div className="flex items-center">
                     <div className="loading-spinner mr-2"></div>
                     Uploading Files...
