@@ -11,6 +11,7 @@ const EditEvent = () => {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [uploadingCover, setUploadingCover] = useState(false);
+  const [uploadingGallery, setUploadingGallery] = useState(false);
   const [formData, setFormData] = useState({
     eventName: '',
     eventDate: '',
@@ -78,6 +79,42 @@ const EditEvent = () => {
     } finally {
       setUploadingCover(false);
     }
+  };
+
+  const handleGalleryUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    try {
+      setUploadingGallery(true);
+      const uploadPromises = files.map(file => uploadAPI.single(file));
+      const responses = await Promise.all(uploadPromises);
+      
+      const newImages = responses
+        .filter(response => response.data.success)
+        .map(response => response.data.data.url);
+      
+      setFormData(prev => ({
+        ...prev,
+        galleryImages: [...prev.galleryImages, ...newImages]
+      }));
+      
+      toast.success(`${newImages.length} image(s) added to gallery`);
+    } catch (error) {
+      console.error('Gallery upload error:', error);
+      toast.error('Failed to upload gallery images');
+    } finally {
+      setUploadingGallery(false);
+    }
+  };
+
+  const removeGalleryImage = (index) => {
+    const newGalleryImages = formData.galleryImages.filter((_, i) => i !== index);
+    setFormData(prev => ({
+      ...prev,
+      galleryImages: newGalleryImages
+    }));
+    toast.success('Image removed from gallery');
   };
 
   const handleSubmit = async (e) => {
@@ -290,6 +327,73 @@ const EditEvent = () => {
               </div>
             </div>
 
+            {/* Gallery Images */}
+            <div>
+              <h3 className="text-xl font-semibold text-secondary-900 mb-4">Gallery Images</h3>
+              
+              {/* Current Gallery Images */}
+              {formData.galleryImages.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="text-lg font-medium text-secondary-700 mb-3">Current Images ({formData.galleryImages.length})</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {formData.galleryImages.map((image, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={image}
+                          alt={`Gallery ${index + 1}`}
+                          className="w-full h-32 object-cover rounded-lg shadow-md"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeGalleryImage(index)}
+                          className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-700"
+                        >
+                          <FiX className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Upload New Images */}
+              <div className="border-2 border-dashed border-secondary-300 rounded-xl p-6 text-center">
+                <FiUpload className="w-12 h-12 text-secondary-400 mx-auto mb-4" />
+                <h4 className="text-lg font-medium text-secondary-700 mb-2">Add More Gallery Images</h4>
+                <p className="text-secondary-500 mb-4">
+                  Upload multiple images to showcase your event. You can select multiple files at once.
+                </p>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleGalleryUpload}
+                  className="hidden"
+                  id="gallery-upload"
+                  disabled={uploadingGallery}
+                />
+                <label
+                  htmlFor="gallery-upload"
+                  className="btn-primary cursor-pointer inline-flex items-center"
+                >
+                  {uploadingGallery ? (
+                    <>
+                      <div className="loading-spinner mr-2"></div>
+                      Uploading Images...
+                    </>
+                  ) : (
+                    <>
+                      <FiUpload className="w-4 h-4 mr-2" />
+                      Choose Images
+                    </>
+                  )}
+                </label>
+                <p className="text-xs text-secondary-400 mt-2">
+                  Supported formats: JPG, PNG, WebP. Max size: 10MB per image.
+                </p>
+              </div>
+            </div>
+
             {/* Submit Buttons */}
             <div className="flex justify-end space-x-4 pt-6 border-t border-secondary-200">
               <Link
@@ -300,13 +404,18 @@ const EditEvent = () => {
               </Link>
               <button
                 type="submit"
-                disabled={loading || uploadingCover}
+                disabled={loading || uploadingCover || uploadingGallery}
                 className="btn-primary px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <div className="flex items-center">
                     <div className="loading-spinner mr-2"></div>
                     Updating...
+                  </div>
+                ) : uploadingCover || uploadingGallery ? (
+                  <div className="flex items-center">
+                    <div className="loading-spinner mr-2"></div>
+                    Uploading Images...
                   </div>
                 ) : (
                   'Update Event'
