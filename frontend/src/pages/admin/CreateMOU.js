@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiArrowLeft, FiUpload, FiX, FiCalendar, FiHome, FiUser, FiMail, FiPhone } from 'react-icons/fi';
+import { FiArrowLeft, FiUpload, FiX, FiCalendar, FiHome } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import { mousAPI, uploadAPI } from '../../services/api';
 
@@ -20,32 +20,15 @@ const CreateMOU = () => {
     companyLogo: '',
     mouDocument: '',
     status: 'active',
-    contactPerson: {
-      name: '',
-      designation: '',
-      email: '',
-      phone: ''
-    },
     benefits: ['']
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name.startsWith('contactPerson.')) {
-      const field = name.split('.')[1];
-      setFormData(prev => ({
-        ...prev,
-        contactPerson: {
-          ...prev.contactPerson,
-          [field]: value
-        }
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleBenefitChange = (index, value) => {
@@ -332,72 +315,6 @@ const CreateMOU = () => {
                   className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                   placeholder="Describe the MOU and its purpose in detail"
                 />
-              </div>
-            </div>
-
-            {/* Contact Person */}
-            <div>
-              <h2 className="text-2xl font-semibold text-secondary-900 mb-6 flex items-center">
-                <FiUser className="w-6 h-6 mr-3 text-primary-600" />
-                Contact Person
-              </h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-semibold text-secondary-700 mb-2">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    name="contactPerson.name"
-                    value={formData.contactPerson.name}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-                    placeholder="Contact person name"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-semibold text-secondary-700 mb-2">
-                    Designation
-                  </label>
-                  <input
-                    type="text"
-                    name="contactPerson.designation"
-                    value={formData.contactPerson.designation}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-                    placeholder="Job title/designation"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-semibold text-secondary-700 mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="contactPerson.email"
-                    value={formData.contactPerson.email}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-                    placeholder="email@company.com"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-semibold text-secondary-700 mb-2">
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    name="contactPerson.phone"
-                    value={formData.contactPerson.phone}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-                    placeholder="+91 12345 67890"
-                  />
-                </div>
               </div>
             </div>
 

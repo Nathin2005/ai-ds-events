@@ -234,11 +234,9 @@ const ManageMOUs = () => {
                             <div className="text-sm font-semibold text-secondary-900 mb-1">
                               {mou.companyName}
                             </div>
-                            {mou.contactPerson?.name && (
-                              <div className="text-xs text-secondary-500">
-                                Contact: {mou.contactPerson.name}
-                              </div>
-                            )}
+                            <div className="text-xs text-secondary-500">
+                              Status: {mou.status}
+                            </div>
                           </div>
                         </div>
                       </td>
