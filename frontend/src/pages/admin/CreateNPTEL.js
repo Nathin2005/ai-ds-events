@@ -33,6 +33,12 @@ const CreateNPTEL = () => {
   };
 
   const handleImageUpload = async (file) => {
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Certificate image must be less than 5MB');
+      return;
+    }
+
     try {
       setUploading(true);
       const response = await uploadAPI.single(file);
@@ -40,7 +46,7 @@ const CreateNPTEL = () => {
       if (response.data.success) {
         setFormData(prev => ({
           ...prev,
-          certificateImage: response.data.data.secure_url
+          certificateImage: response.data.data.url
         }));
         toast.success('Certificate image uploaded successfully');
       }
@@ -298,7 +304,7 @@ const CreateNPTEL = () => {
                 <FiUpload className="w-5 h-5 mr-2 text-primary-600" />
                 Certificate Image *
               </h2>
-              <div className="border-2 border-dashed border-secondary-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors">
+              <div className="border-2 border-dashed border-secondary-300 rounded-xl p-8 text-center">
                 {formData.certificateImage ? (
                   <div className="space-y-4">
                     <img
@@ -306,34 +312,52 @@ const CreateNPTEL = () => {
                       alt="Certificate"
                       className="max-h-64 mx-auto object-contain rounded-lg shadow-md"
                     />
+                    <p className="text-sm text-green-600 mb-4 font-medium">✅ Certificate image uploaded successfully</p>
                     <button
                       type="button"
                       onClick={() => setFormData(prev => ({ ...prev, certificateImage: '' }))}
-                      className="text-red-600 hover:text-red-700 text-sm font-medium"
+                      className="text-red-600 hover:text-red-700 font-medium"
                     >
                       Remove Certificate Image
                     </button>
                   </div>
                 ) : (
                   <div>
-                    <FiUpload className="w-12 h-12 text-secondary-400 mx-auto mb-4" />
-                    <p className="text-lg text-secondary-600 mb-2">Upload Certificate Image</p>
-                    <p className="text-sm text-secondary-500 mb-4">
-                      Upload a clear image of the NPTEL certificate (JPG, PNG, PDF)
+                    <FiUpload className="w-16 h-16 text-secondary-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-secondary-700 mb-2">Upload Certificate Image</h3>
+                    <p className="text-secondary-500 mb-6">
+                      Upload a clear image of the NPTEL certificate (JPG, PNG, WebP)
                     </p>
                     <input
                       type="file"
-                      accept="image/*,.pdf"
+                      accept="image/*"
                       onChange={(e) => {
                         const file = e.target.files[0];
                         if (file) handleImageUpload(file);
                       }}
                       className="hidden"
                       id="certificateImage"
+                      disabled={uploading}
                     />
-                    <label htmlFor="certificateImage" className="btn-primary cursor-pointer">
-                      {uploading ? 'Uploading...' : 'Choose Certificate Image'}
+                    <label 
+                      htmlFor="certificateImage" 
+                      className="btn-primary cursor-pointer inline-flex items-center"
+                    >
+                      {uploading ? (
+                        <>
+                          <div className="loading-spinner mr-2"></div>
+                          Uploading...
+                        </>
+                      ) : (
+                        <>
+                          <FiUpload className="w-4 h-4 mr-2" />
+                          Choose Certificate Image
+                        </>
+                      )}
                     </label>
+                    <p className="text-xs text-secondary-400 mt-2">
+                      Maximum file size: 5MB
+                    </p>
                   </div>
                 )}
               </div>
