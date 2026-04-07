@@ -7,11 +7,6 @@ const nptelCertificationSchema = new mongoose.Schema({
     trim: true,
     maxlength: [200, 'Course name cannot exceed 200 characters']
   },
-  courseCode: {
-    type: String,
-    trim: true,
-    maxlength: [50, 'Course code cannot exceed 50 characters']
-  },
   category: {
     type: String,
     enum: ['faculty', 'student'],
@@ -34,10 +29,6 @@ const nptelCertificationSchema = new mongoose.Schema({
     trim: true,
     default: 'AI & DS'
   },
-  semester: {
-    type: String,
-    trim: true
-  },
   year: {
     type: Number,
     required: [true, 'Year is required'],
@@ -54,11 +45,6 @@ const nptelCertificationSchema = new mongoose.Schema({
     min: [0, 'Score cannot be negative'],
     max: [100, 'Score cannot exceed 100']
   },
-  grade: {
-    type: String,
-    enum: ['Elite', 'Elite + Gold', 'Successfully Completed', 'Not Completed'],
-    required: [true, 'Grade is required']
-  },
   certificateImage: {
     type: String,
     required: [true, 'Certificate image is required'],
@@ -69,25 +55,11 @@ const nptelCertificationSchema = new mongoose.Schema({
       message: 'Certificate image must be a valid URL'
     }
   },
-  certificateNumber: {
-    type: String,
-    trim: true,
-    unique: true,
-    sparse: true
-  },
   duration: {
     type: String,
     trim: true
   },
-  instructor: {
-    type: String,
-    trim: true
-  },
   institution: {
-    type: String,
-    trim: true
-  },
-  description: {
     type: String,
     trim: true
   }
@@ -101,7 +73,6 @@ const nptelCertificationSchema = new mongoose.Schema({
 nptelCertificationSchema.index({ completionDate: -1 });
 nptelCertificationSchema.index({ category: 1, year: -1 });
 nptelCertificationSchema.index({ participantName: 1 });
-nptelCertificationSchema.index({ grade: 1 });
 
 // Virtual for academic year
 nptelCertificationSchema.virtual('academicYear').get(function() {

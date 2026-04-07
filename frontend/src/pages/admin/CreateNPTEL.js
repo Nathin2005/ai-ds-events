@@ -12,22 +12,16 @@ const CreateNPTEL = () => {
   
   const [formData, setFormData] = useState({
     courseName: '',
-    courseCode: '',
     category: 'student',
     participantName: '',
     participantId: '',
     department: 'AI & DS',
-    semester: '',
     year: new Date().getFullYear(),
     completionDate: '',
     score: '',
-    grade: 'Successfully Completed',
     certificateImage: '',
-    certificateNumber: '',
     duration: '',
-    instructor: '',
-    institution: '',
-    description: ''
+    institution: ''
   });
 
   const handleInputChange = (e) => {
@@ -146,34 +140,6 @@ const CreateNPTEL = () => {
                 
                 <div>
                   <label className="block text-sm font-medium text-secondary-700 mb-2">
-                    Course Code
-                  </label>
-                  <input
-                    type="text"
-                    name="courseCode"
-                    value={formData.courseCode}
-                    onChange={handleInputChange}
-                    className="input-field"
-                    placeholder="e.g., CS101"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
-                    Instructor
-                  </label>
-                  <input
-                    type="text"
-                    name="instructor"
-                    value={formData.instructor}
-                    onChange={handleInputChange}
-                    className="input-field"
-                    placeholder="Course instructor name"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
                     Institution
                   </label>
                   <input
@@ -199,20 +165,6 @@ const CreateNPTEL = () => {
                     placeholder="e.g., 12 weeks"
                   />
                 </div>
-              </div>
-
-              <div className="mt-6">
-                <label className="block text-sm font-medium text-secondary-700 mb-2">
-                  Course Description
-                </label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  rows={3}
-                  className="input-field"
-                  placeholder="Brief description of the course content"
-                />
               </div>
             </div>
 
@@ -281,30 +233,6 @@ const CreateNPTEL = () => {
                     placeholder="Department name"
                   />
                 </div>
-                
-                {formData.category === 'student' && (
-                  <div>
-                    <label className="block text-sm font-medium text-secondary-700 mb-2">
-                      Semester
-                    </label>
-                    <select
-                      name="semester"
-                      value={formData.semester}
-                      onChange={handleInputChange}
-                      className="input-field"
-                    >
-                      <option value="">Select Semester</option>
-                      <option value="1">1st Semester</option>
-                      <option value="2">2nd Semester</option>
-                      <option value="3">3rd Semester</option>
-                      <option value="4">4th Semester</option>
-                      <option value="5">5th Semester</option>
-                      <option value="6">6th Semester</option>
-                      <option value="7">7th Semester</option>
-                      <option value="8">8th Semester</option>
-                    </select>
-                  </div>
-                )}
               </div>
             </div>
 
@@ -359,38 +287,6 @@ const CreateNPTEL = () => {
                     placeholder="Enter percentage score"
                     min="0"
                     max="100"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
-                    Grade *
-                  </label>
-                  <select
-                    name="grade"
-                    value={formData.grade}
-                    onChange={handleInputChange}
-                    className="input-field"
-                    required
-                  >
-                    <option value="Elite + Gold">Elite + Gold</option>
-                    <option value="Elite">Elite</option>
-                    <option value="Successfully Completed">Successfully Completed</option>
-                    <option value="Not Completed">Not Completed</option>
-                  </select>
-                </div>
-                
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
-                    Certificate Number
-                  </label>
-                  <input
-                    type="text"
-                    name="certificateNumber"
-                    value={formData.certificateNumber}
-                    onChange={handleInputChange}
-                    className="input-field"
-                    placeholder="NPTEL certificate number"
                   />
                 </div>
               </div>
