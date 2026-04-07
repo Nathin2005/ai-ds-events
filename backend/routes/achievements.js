@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Achievement = require('../models/Achievement');
-const auth = require('../middleware/auth');
+const { auth } = require('../middleware/auth');
 
 // Get all achievements (public)
 router.get('/', async (req, res) => {
@@ -59,36 +59,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get single achievement by ID (public)
-router.get('/:id', async (req, res) => {
-  try {
-    const achievement = await Achievement.findOne({ 
-      _id: req.params.id, 
-      isPublished: true 
-    });
-    
-    if (!achievement) {
-      return res.status(404).json({
-        success: false,
-        message: 'Achievement not found'
-      });
-    }
-    
-    res.json({
-      success: true,
-      data: achievement
-    });
-  } catch (error) {
-    console.error('Error fetching achievement:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch achievement',
-      error: error.message
-    });
-  }
-});
-
-// Get achievements by category (public)
+// Get achievements by category (public) - MUST be before /:id route
 router.get('/category/:category', async (req, res) => {
   try {
     const { category } = req.params;
@@ -121,7 +92,7 @@ router.get('/category/:category', async (req, res) => {
   }
 });
 
-// Get recent achievements (public)
+// Get recent achievements (public) - MUST be before /:id route
 router.get('/stats/recent', async (req, res) => {
   try {
     const { limit = 10 } = req.query;
@@ -143,7 +114,7 @@ router.get('/stats/recent', async (req, res) => {
   }
 });
 
-// Get statistics (public)
+// Get statistics (public) - MUST be before /:id route
 router.get('/stats/overview', async (req, res) => {
   try {
     const totalAchievements = await Achievement.countDocuments({ isPublished: true });
@@ -194,6 +165,35 @@ router.get('/stats/overview', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to fetch achievement statistics',
+      error: error.message
+    });
+  }
+});
+
+// Get single achievement by ID (public)
+router.get('/:id', async (req, res) => {
+  try {
+    const achievement = await Achievement.findOne({ 
+      _id: req.params.id, 
+      isPublished: true 
+    });
+    
+    if (!achievement) {
+      return res.status(404).json({
+        success: false,
+        message: 'Achievement not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: achievement
+    });
+  } catch (error) {
+    console.error('Error fetching achievement:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch achievement',
       error: error.message
     });
   }

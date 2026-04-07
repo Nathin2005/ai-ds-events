@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const NPTELCertification = require('../models/NPTELCertification');
-const auth = require('../middleware/auth');
+const { auth } = require('../middleware/auth');
 
 // Get all NPTEL certifications (public)
 router.get('/', async (req, res) => {
@@ -56,33 +56,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get single NPTEL certification by ID (public)
-router.get('/:id', async (req, res) => {
-  try {
-    const certification = await NPTELCertification.findById(req.params.id);
-    
-    if (!certification) {
-      return res.status(404).json({
-        success: false,
-        message: 'NPTEL certification not found'
-      });
-    }
-    
-    res.json({
-      success: true,
-      data: certification
-    });
-  } catch (error) {
-    console.error('Error fetching NPTEL certification:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch NPTEL certification',
-      error: error.message
-    });
-  }
-});
-
-// Get certifications by category (public)
+// Get certifications by category (public) - MUST be before /:id route
 router.get('/category/:category', async (req, res) => {
   try {
     const { category } = req.params;
@@ -112,7 +86,7 @@ router.get('/category/:category', async (req, res) => {
   }
 });
 
-// Get top performers (public)
+// Get top performers (public) - MUST be before /:id route
 router.get('/stats/top-performers', async (req, res) => {
   try {
     const { category, limit = 10 } = req.query;
@@ -134,7 +108,7 @@ router.get('/stats/top-performers', async (req, res) => {
   }
 });
 
-// Get statistics (public)
+// Get statistics (public) - MUST be before /:id route
 router.get('/stats/overview', async (req, res) => {
   try {
     const totalCertifications = await NPTELCertification.countDocuments();
@@ -168,6 +142,32 @@ router.get('/stats/overview', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to fetch NPTEL statistics',
+      error: error.message
+    });
+  }
+});
+
+// Get single NPTEL certification by ID (public)
+router.get('/:id', async (req, res) => {
+  try {
+    const certification = await NPTELCertification.findById(req.params.id);
+    
+    if (!certification) {
+      return res.status(404).json({
+        success: false,
+        message: 'NPTEL certification not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: certification
+    });
+  } catch (error) {
+    console.error('Error fetching NPTEL certification:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch NPTEL certification',
       error: error.message
     });
   }

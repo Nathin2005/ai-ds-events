@@ -53,39 +53,41 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation Menu */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden lg:flex items-center space-x-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg font-medium transition-all duration-200 text-sm ${
                     isActive(item.path)
                       ? 'text-primary-600 bg-primary-50 shadow-sm'
                       : 'text-secondary-600 hover:text-primary-600 hover:bg-secondary-50'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
-                  <span>{item.name}</span>
+                  <span className="hidden xl:block">{item.name}</span>
+                  <span className="xl:hidden">{item.name.split(' ')[0]}</span>
                 </Link>
               );
             })}
 
             {/* Admin Section */}
-            <div className="ml-6 pl-6 border-l border-secondary-200">
+            <div className="ml-4 pl-4 border-l border-secondary-200">
               {isAuthenticated ? (
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2">
                   <Link
                     to="/admin/dashboard"
-                    className="flex items-center space-x-2 px-4 py-2 rounded-lg text-secondary-600 hover:text-primary-600 hover:bg-secondary-50 transition-all duration-200 font-medium"
+                    className="flex items-center space-x-2 px-3 py-2 rounded-lg text-secondary-600 hover:text-primary-600 hover:bg-secondary-50 transition-all duration-200 font-medium text-sm"
                   >
                     <FiUser className="w-4 h-4" />
-                    <span>Admin Dashboard</span>
+                    <span className="hidden xl:block">Admin Dashboard</span>
+                    <span className="xl:hidden">Admin</span>
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="btn-secondary text-sm"
+                    className="btn-secondary text-xs px-3 py-2"
                   >
                     Logout
                   </button>
@@ -93,7 +95,7 @@ const Navbar = () => {
               ) : (
                 <Link
                   to="/admin/login"
-                  className="btn-primary text-sm"
+                  className="btn-primary text-sm px-3 py-2"
                 >
                   Admin Login
                 </Link>
@@ -102,7 +104,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-2 rounded-lg text-secondary-600 hover:text-primary-600 hover:bg-secondary-50 transition-colors duration-200"
@@ -118,7 +120,7 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden py-4 border-t border-secondary-200 bg-white"
+            className="lg:hidden py-4 border-t border-secondary-200 bg-white"
           >
             <div className="flex flex-col space-y-1">
               {navItems.map((item) => {

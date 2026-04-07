@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const MOU = require('../models/MOU');
-const auth = require('../middleware/auth');
+const { auth } = require('../middleware/auth');
 
 // Get all MOUs (public)
 router.get('/', async (req, res) => {
@@ -45,6 +45,26 @@ router.get('/', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to fetch MOUs',
+      error: error.message
+    });
+  }
+});
+
+// Get active MOUs (public) - MUST be before /:id route
+router.get('/status/active', async (req, res) => {
+  try {
+    const mous = await MOU.getActive();
+    
+    res.json({
+      success: true,
+      data: mous,
+      count: mous.length
+    });
+  } catch (error) {
+    console.error('Error fetching active MOUs:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch active MOUs',
       error: error.message
     });
   }
@@ -149,26 +169,6 @@ router.delete('/:id', auth, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to delete MOU',
-      error: error.message
-    });
-  }
-});
-
-// Get active MOUs (public)
-router.get('/status/active', async (req, res) => {
-  try {
-    const mous = await MOU.getActive();
-    
-    res.json({
-      success: true,
-      data: mous,
-      count: mous.length
-    });
-  } catch (error) {
-    console.error('Error fetching active MOUs:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch active MOUs',
       error: error.message
     });
   }
