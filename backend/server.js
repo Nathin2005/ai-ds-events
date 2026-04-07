@@ -8,6 +8,9 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const eventRoutes = require('./routes/events');
 const uploadRoutes = require('./routes/upload');
+const mouRoutes = require('./routes/mous');
+const nptelRoutes = require('./routes/nptel');
+const achievementRoutes = require('./routes/achievements');
 const connectDB = require('./utils/dbConnection');
 
 const app = express();
@@ -47,6 +50,9 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/mous', mouRoutes);
+app.use('/api/nptel', nptelRoutes);
+app.use('/api/achievements', achievementRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -157,6 +163,12 @@ const startServer = async () => {
     console.log('   POST /api/auth/login - Admin login');
     console.log('   GET  /api/events - Get all events');
     console.log('   POST /api/events - Create event (admin)');
+    console.log('   GET  /api/mous - Get all MOUs');
+    console.log('   POST /api/mous - Create MOU (admin)');
+    console.log('   GET  /api/nptel - Get NPTEL certifications');
+    console.log('   POST /api/nptel - Create NPTEL certification (admin)');
+    console.log('   GET  /api/achievements - Get achievements');
+    console.log('   POST /api/achievements - Create achievement (admin)');
     console.log('   POST /api/upload/single - Upload image (admin)');
     console.log('\n✅ Ready to accept requests!');
   });

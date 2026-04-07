@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiPlus, FiCalendar, FiClock, FiEdit, FiTrash2, FiEye, FiTrendingUp } from 'react-icons/fi';
+import { FiPlus, FiCalendar, FiClock, FiEdit, FiTrash2, FiEye, FiTrendingUp, FiFileText, FiAward, FiSettings } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import { eventsAPI } from '../../services/api';
 import { format } from 'date-fns';
@@ -112,7 +112,7 @@ const AdminDashboard = () => {
               Admin Dashboard
             </h1>
             <p className="text-lg text-secondary-600">
-              Manage AI & DS department events and activities
+              Manage AI & DS department content and activities
             </p>
           </div>
           <Link
@@ -121,6 +121,70 @@ const AdminDashboard = () => {
           >
             <FiPlus className="w-5 h-5" />
             <span>Create New Event</span>
+          </Link>
+        </motion.div>
+
+        {/* Quick Actions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+        >
+          <Link
+            to="/admin/events/create"
+            className="card p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center group-hover:bg-primary-200 transition-colors">
+                <FiCalendar className="w-6 h-6 text-primary-600" />
+              </div>
+              <FiPlus className="w-5 h-5 text-secondary-400 group-hover:text-primary-600 transition-colors" />
+            </div>
+            <h3 className="text-lg font-semibold text-secondary-900 mb-2">Manage Events</h3>
+            <p className="text-sm text-secondary-600">Create and manage department events</p>
+          </Link>
+
+          <Link
+            to="/admin/mous"
+            className="card p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                <FiFileText className="w-6 h-6 text-blue-600" />
+              </div>
+              <FiPlus className="w-5 h-5 text-secondary-400 group-hover:text-blue-600 transition-colors" />
+            </div>
+            <h3 className="text-lg font-semibold text-secondary-900 mb-2">Manage MOUs</h3>
+            <p className="text-sm text-secondary-600">Add and manage company partnerships</p>
+          </Link>
+
+          <Link
+            to="/admin/nptel"
+            className="card p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                <FiTrendingUp className="w-6 h-6 text-green-600" />
+              </div>
+              <FiPlus className="w-5 h-5 text-secondary-400 group-hover:text-green-600 transition-colors" />
+            </div>
+            <h3 className="text-lg font-semibold text-secondary-900 mb-2">NPTEL Certifications</h3>
+            <p className="text-sm text-secondary-600">Manage faculty and student certifications</p>
+          </Link>
+
+          <Link
+            to="/admin/achievements"
+            className="card p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center group-hover:bg-yellow-200 transition-colors">
+                <FiAward className="w-6 h-6 text-yellow-600" />
+              </div>
+              <FiPlus className="w-5 h-5 text-secondary-400 group-hover:text-yellow-600 transition-colors" />
+            </div>
+            <h3 className="text-lg font-semibold text-secondary-900 mb-2">Awards & Achievements</h3>
+            <p className="text-sm text-secondary-600">Manage faculty, student & project achievements</p>
           </Link>
         </motion.div>
 
@@ -133,7 +197,7 @@ const AdminDashboard = () => {
                 key={stat.label}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
+                transition={{ duration: 0.8, delay: index * 0.1 + 0.4 }}
                 whileHover={{ y: -5, scale: 1.05 }}
                 className="card p-6 hover:shadow-xl transition-all duration-300 cursor-pointer"
               >
@@ -169,7 +233,7 @@ const AdminDashboard = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
           className="card overflow-hidden shadow-lg"
         >
           <div className="p-6 border-b border-secondary-200 bg-white">

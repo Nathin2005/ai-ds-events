@@ -11,6 +11,9 @@ import Footer from './components/layout/Footer';
 import Home from './pages/Home';
 import Events from './pages/Events';
 import EventDetails from './pages/EventDetails';
+import MOUs from './pages/MOUs';
+import NPTELCertifications from './pages/NPTELCertifications';
+import Achievements from './pages/Achievements';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import CreateEvent from './pages/admin/CreateEvent';
@@ -31,6 +34,9 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/events" element={<Events />} />
               <Route path="/events/:id" element={<EventDetails />} />
+              <Route path="/mous" element={<MOUs />} />
+              <Route path="/nptel" element={<NPTELCertifications />} />
+              <Route path="/achievements" element={<Achievements />} />
               
               {/* Admin Routes */}
               <Route path="/admin/login" element={<AdminLogin />} />

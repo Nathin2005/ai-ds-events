@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiMenu, FiX, FiCalendar, FiHome, FiClock, FiUser } from 'react-icons/fi';
+import { FiMenu, FiX, FiCalendar, FiHome, FiClock, FiUser, FiFileText, FiAward, FiTrendingUp } from 'react-icons/fi';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Navbar = () => {
@@ -14,6 +14,9 @@ const Navbar = () => {
     { name: 'Home', path: '/', icon: FiHome },
     { name: 'Events', path: '/events', icon: FiCalendar },
     { name: 'Upcoming Events', path: '/events?filter=upcoming', icon: FiClock },
+    { name: 'MOUs', path: '/mous', icon: FiFileText },
+    { name: 'NPTEL Certifications', path: '/nptel', icon: FiTrendingUp },
+    { name: 'Awards & Achievements', path: '/achievements', icon: FiAward },
   ];
 
   const isActive = (path) => {

@@ -106,6 +106,49 @@ export const uploadAPI = {
   getStats: () => api.get('/upload/stats'),
 };
 
+// MOUs API endpoints
+export const mousAPI = {
+  // Public endpoints
+  getAll: (params = {}) => api.get('/mous', { params }),
+  getActive: () => api.get('/mous/status/active'),
+  getById: (id) => api.get(`/mous/${id}`),
+  
+  // Admin endpoints
+  create: (mouData) => api.post('/mous', mouData),
+  update: (id, mouData) => api.put(`/mous/${id}`, mouData),
+  delete: (id) => api.delete(`/mous/${id}`),
+};
+
+// NPTEL Certifications API endpoints
+export const nptelAPI = {
+  // Public endpoints
+  getAll: (params = {}) => api.get('/nptel', { params }),
+  getByCategory: (category, params = {}) => api.get(`/nptel/category/${category}`, { params }),
+  getById: (id) => api.get(`/nptel/${id}`),
+  getTopPerformers: (params = {}) => api.get('/nptel/stats/top-performers', { params }),
+  getStats: () => api.get('/nptel/stats/overview'),
+  
+  // Admin endpoints
+  create: (certificationData) => api.post('/nptel', certificationData),
+  update: (id, certificationData) => api.put(`/nptel/${id}`, certificationData),
+  delete: (id) => api.delete(`/nptel/${id}`),
+};
+
+// Achievements API endpoints
+export const achievementsAPI = {
+  // Public endpoints
+  getAll: (params = {}) => api.get('/achievements', { params }),
+  getByCategory: (category, params = {}) => api.get(`/achievements/category/${category}`, { params }),
+  getById: (id) => api.get(`/achievements/${id}`),
+  getRecent: (params = {}) => api.get('/achievements/stats/recent', { params }),
+  getStats: () => api.get('/achievements/stats/overview'),
+  
+  // Admin endpoints
+  create: (achievementData) => api.post('/achievements', achievementData),
+  update: (id, achievementData) => api.put(`/achievements/${id}`, achievementData),
+  delete: (id) => api.delete(`/achievements/${id}`),
+};
+
 // Health check
 export const healthAPI = {
   check: () => api.get('/health'),
