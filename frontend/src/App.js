@@ -18,6 +18,9 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import CreateEvent from './pages/admin/CreateEvent';
 import EditEvent from './pages/admin/EditEvent';
+import ManageMOUs from './pages/admin/ManageMOUs';
+import ManageNPTEL from './pages/admin/ManageNPTEL';
+import ManageAchievements from './pages/admin/ManageAchievements';
 
 // Utils
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -49,6 +52,14 @@ function App() {
                 } 
               />
               <Route 
+                path="/admin" 
+                element={
+                  <ProtectedRoute>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
                 path="/admin/events/create" 
                 element={
                   <ProtectedRoute>
@@ -61,6 +72,30 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <EditEvent />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/mous" 
+                element={
+                  <ProtectedRoute>
+                    <ManageMOUs />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/nptel" 
+                element={
+                  <ProtectedRoute>
+                    <ManageNPTEL />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/achievements" 
+                element={
+                  <ProtectedRoute>
+                    <ManageAchievements />
                   </ProtectedRoute>
                 } 
               />

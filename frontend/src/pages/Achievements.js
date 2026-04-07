@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FiAward, FiUser, FiUsers, FiFolder, FiCalendar, FiTrendingUp, FiFilter, FiStar, FiGlobe } from 'react-icons/fi';
+import { FiAward, FiUser, FiUsers, FiFolder, FiCalendar, FiTrendingUp, FiFilter, FiStar, FiMapPin } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import { achievementsAPI } from '../services/api';
 import { format } from 'date-fns';

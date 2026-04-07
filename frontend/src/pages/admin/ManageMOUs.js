@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiPlus, FiEdit, FiTrash2, FiEye, FiFileText, FiCalendar, FiBuilding } from 'react-icons/fi';
+import { FiPlus, FiEdit, FiTrash2, FiEye, FiFileText, FiCalendar, FiHome } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import { mousAPI } from '../../services/api';
 import { format } from 'date-fns';
@@ -123,7 +123,7 @@ const ManageMOUs = () => {
           
           <div className="card p-6 text-center hover:shadow-lg transition-all duration-300">
             <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <FiBuilding className="w-6 h-6 text-green-600" />
+              <FiHome className="w-6 h-6 text-green-600" />
             </div>
             <div className="text-2xl font-bold text-secondary-900 mb-1">
               {mous.filter(m => m.status === 'active').length}
@@ -227,7 +227,7 @@ const ManageMOUs = () => {
                             />
                           ) : (
                             <div className="w-16 h-16 rounded-lg bg-secondary-100 flex items-center justify-center mr-4">
-                              <FiBuilding className="w-8 h-8 text-secondary-400" />
+                              <FiHome className="w-8 h-8 text-secondary-400" />
                             </div>
                           )}
                           <div className="flex-1">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FiFileText, FiCalendar, FiExternalLink, FiBuilding, FiClock, FiFilter } from 'react-icons/fi';
+import { FiFileText, FiCalendar, FiExternalLink, FiHome, FiClock, FiFilter } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import { mousAPI } from '../services/api';
 import { format } from 'date-fns';
@@ -156,7 +156,7 @@ const MOUs = () => {
 
                   {/* Company Name */}
                   <div className="flex items-center mb-3">
-                    <FiBuilding className="w-5 h-5 text-primary-600 mr-2" />
+                    <FiHome className="w-5 h-5 text-primary-600 mr-2" />
                     <h3 className="text-xl font-bold text-secondary-900">
                       {mou.companyName}
                     </h3>

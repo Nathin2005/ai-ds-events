@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiPlus, FiCalendar, FiClock, FiEdit, FiTrash2, FiEye, FiTrendingUp, FiFileText, FiAward, FiSettings } from 'react-icons/fi';
+import { FiPlus, FiCalendar, FiClock, FiEdit, FiTrash2, FiEye, FiTrendingUp, FiFileText, FiAward } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import { eventsAPI } from '../../services/api';
 import { format } from 'date-fns';
