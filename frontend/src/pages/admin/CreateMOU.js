@@ -8,7 +8,8 @@ import { mousAPI, uploadAPI } from '../../services/api';
 const CreateMOU = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingDocument, setUploadingDocument] = useState(false);
   
   const [formData, setFormData] = useState({
     companyName: '',
@@ -28,7 +29,7 @@ const CreateMOU = () => {
     benefits: ['']
   });
 
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     if (name.startsWith('contactPerson.')) {
       const field = name.split('.')[1];
@@ -73,23 +74,59 @@ const CreateMOU = () => {
     }
   };
 
-  const handleImageUpload = async (file, type) => {
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Company logo must be less than 5MB');
+      return;
+    }
+
     try {
-      setUploading(true);
+      setUploadingLogo(true);
       const response = await uploadAPI.single(file);
-      
       if (response.data.success) {
         setFormData(prev => ({
           ...prev,
-          [type]: response.data.data.secure_url
+          companyLogo: response.data.data.url
         }));
-        toast.success(`${type === 'companyLogo' ? 'Company logo' : 'MOU document'} uploaded successfully`);
+        toast.success('Company logo uploaded successfully');
       }
     } catch (error) {
       console.error('Upload error:', error);
-      toast.error('Failed to upload file');
+      toast.error('Failed to upload company logo');
     } finally {
-      setUploading(false);
+      setUploadingLogo(false);
+    }
+  };
+
+  const handleDocumentUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file size (10MB limit for documents)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('MOU document must be less than 10MB');
+      return;
+    }
+
+    try {
+      setUploadingDocument(true);
+      const response = await uploadAPI.single(file);
+      if (response.data.success) {
+        setFormData(prev => ({
+          ...prev,
+          mouDocument: response.data.data.url
+        }));
+        toast.success('MOU document uploaded successfully');
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Failed to upload MOU document');
+    } finally {
+      setUploadingDocument(false);
     }
   };
 
@@ -97,9 +134,28 @@ const CreateMOU = () => {
     e.preventDefault();
     
     // Validation
-    if (!formData.companyName || !formData.mouTitle || !formData.description || 
-        !formData.signingDate || !formData.validUntil) {
-      toast.error('Please fill in all required fields');
+    if (!formData.companyName.trim()) {
+      toast.error('Please enter company name');
+      return;
+    }
+
+    if (!formData.mouTitle.trim()) {
+      toast.error('Please enter MOU title');
+      return;
+    }
+
+    if (!formData.description.trim()) {
+      toast.error('Please enter description');
+      return;
+    }
+
+    if (!formData.signingDate) {
+      toast.error('Please select signing date');
+      return;
+    }
+
+    if (!formData.validUntil) {
+      toast.error('Please select valid until date');
       return;
     }
 
@@ -131,69 +187,125 @@ const CreateMOU = () => {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="flex items-center justify-between mb-8"
-        >
-          <div className="flex items-center space-x-4">
-            <Link
-              to="/admin/mous"
-              className="p-2 rounded-lg bg-white shadow-sm hover:shadow-md transition-all duration-200 text-secondary-600 hover:text-primary-600"
-            >
-              <FiArrowLeft className="w-5 h-5" />
-            </Link>
-            <div>
-              <h1 className="text-3xl font-display font-bold text-secondary-900">
-                Create New MOU
-              </h1>
-              <p className="text-secondary-600 mt-1">
-                Add a new memorandum of understanding
-              </p>
-            </div>
-          </div>
-        </motion.div>
+        <div className="mb-8">
+          <Link
+            to="/admin/mous"
+            className="inline-flex items-center text-secondary-600 hover:text-primary-600 transition-colors duration-200 mb-6 font-medium"
+          >
+            <FiArrowLeft className="w-4 h-4 mr-2" />
+            Back to MOUs
+          </Link>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h1 className="text-4xl font-display font-bold text-secondary-900 mb-2">
+              Create New MOU
+            </h1>
+            <p className="text-lg text-secondary-600">
+              Add a new memorandum of understanding
+            </p>
+          </motion.div>
+        </div>
 
         {/* Form */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="card p-8"
+          className="card p-8 shadow-lg"
         >
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Information */}
             <div>
-              <h2 className="text-xl font-semibold text-secondary-900 mb-6 flex items-center">
-                <FiHome className="w-5 h-5 mr-2 text-primary-600" />
+              <h2 className="text-2xl font-semibold text-secondary-900 mb-6 flex items-center">
+                <FiHome className="w-6 h-6 mr-3 text-primary-600" />
                 Basic Information
               </h2>
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
+                {/* Company Name */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-secondary-700 mb-2">
                     Company Name *
                   </label>
                   <input
                     type="text"
                     name="companyName"
-                    value={formData.companyName}
-                    onChange={handleInputChange}
-                    className="input-field"
-                    placeholder="Enter company name"
                     required
+                    value={formData.companyName}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                    placeholder="Enter company name"
+                    maxLength={100}
+                  />
+                  <p className="text-xs text-secondary-500 mt-1">
+                    {formData.companyName.length}/100 characters
+                  </p>
+                </div>
+
+                {/* MOU Title */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-secondary-700 mb-2">
+                    MOU Title *
+                  </label>
+                  <input
+                    type="text"
+                    name="mouTitle"
+                    required
+                    value={formData.mouTitle}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                    placeholder="Enter MOU title"
+                    maxLength={200}
+                  />
+                  <p className="text-xs text-secondary-500 mt-1">
+                    {formData.mouTitle.length}/200 characters
+                  </p>
+                </div>
+
+                {/* Signing Date */}
+                <div>
+                  <label className="block text-sm font-semibold text-secondary-700 mb-2">
+                    Signing Date *
+                  </label>
+                  <input
+                    type="date"
+                    name="signingDate"
+                    required
+                    value={formData.signingDate}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                   />
                 </div>
                 
+                {/* Valid Until */}
                 <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
+                  <label className="block text-sm font-semibold text-secondary-700 mb-2">
+                    Valid Until *
+                  </label>
+                  <input
+                    type="date"
+                    name="validUntil"
+                    required
+                    value={formData.validUntil}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+
+                {/* Status */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-secondary-700 mb-2">
                     Status
                   </label>
                   <select
                     name="status"
                     value={formData.status}
-                    onChange={handleInputChange}
-                    className="input-field"
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                   >
                     <option value="active">Active</option>
                     <option value="expired">Expired</option>
@@ -201,134 +313,88 @@ const CreateMOU = () => {
                   </select>
                 </div>
               </div>
+            </div>
 
-              <div className="mt-6">
-                <label className="block text-sm font-medium text-secondary-700 mb-2">
-                  MOU Title *
-                </label>
-                <input
-                  type="text"
-                  name="mouTitle"
-                  value={formData.mouTitle}
-                  onChange={handleInputChange}
-                  className="input-field"
-                  placeholder="Enter MOU title"
-                  required
-                />
-              </div>
-
-              <div className="mt-6">
-                <label className="block text-sm font-medium text-secondary-700 mb-2">
-                  Description *
+            {/* Descriptions */}
+            <div>
+              <h2 className="text-2xl font-semibold text-secondary-900 mb-6">MOU Descriptions</h2>
+              
+              <div>
+                <label className="block text-sm font-semibold text-secondary-700 mb-2">
+                  MOU Description *
                 </label>
                 <textarea
                   name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  rows={4}
-                  className="input-field"
-                  placeholder="Describe the MOU and its purpose"
                   required
+                  rows={6}
+                  value={formData.description}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                  placeholder="Describe the MOU and its purpose in detail"
                 />
-              </div>
-            </div>
-
-            {/* Dates */}
-            <div>
-              <h2 className="text-xl font-semibold text-secondary-900 mb-6 flex items-center">
-                <FiCalendar className="w-5 h-5 mr-2 text-primary-600" />
-                Important Dates
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
-                    Signing Date *
-                  </label>
-                  <input
-                    type="date"
-                    name="signingDate"
-                    value={formData.signingDate}
-                    onChange={handleInputChange}
-                    className="input-field"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
-                    Valid Until *
-                  </label>
-                  <input
-                    type="date"
-                    name="validUntil"
-                    value={formData.validUntil}
-                    onChange={handleInputChange}
-                    className="input-field"
-                    required
-                  />
-                </div>
               </div>
             </div>
 
             {/* Contact Person */}
             <div>
-              <h2 className="text-xl font-semibold text-secondary-900 mb-6 flex items-center">
-                <FiUser className="w-5 h-5 mr-2 text-primary-600" />
+              <h2 className="text-2xl font-semibold text-secondary-900 mb-6 flex items-center">
+                <FiUser className="w-6 h-6 mr-3 text-primary-600" />
                 Contact Person
               </h2>
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
+                  <label className="block text-sm font-semibold text-secondary-700 mb-2">
                     Name
                   </label>
                   <input
                     type="text"
                     name="contactPerson.name"
                     value={formData.contactPerson.name}
-                    onChange={handleInputChange}
-                    className="input-field"
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                     placeholder="Contact person name"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
+                  <label className="block text-sm font-semibold text-secondary-700 mb-2">
                     Designation
                   </label>
                   <input
                     type="text"
                     name="contactPerson.designation"
                     value={formData.contactPerson.designation}
-                    onChange={handleInputChange}
-                    className="input-field"
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                     placeholder="Job title/designation"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
+                  <label className="block text-sm font-semibold text-secondary-700 mb-2">
                     Email
                   </label>
                   <input
                     type="email"
                     name="contactPerson.email"
                     value={formData.contactPerson.email}
-                    onChange={handleInputChange}
-                    className="input-field"
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                     placeholder="email@company.com"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
+                  <label className="block text-sm font-semibold text-secondary-700 mb-2">
                     Phone
                   </label>
                   <input
                     type="tel"
                     name="contactPerson.phone"
                     value={formData.contactPerson.phone}
-                    onChange={handleInputChange}
-                    className="input-field"
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                     placeholder="+91 12345 67890"
                   />
                 </div>
@@ -337,9 +403,7 @@ const CreateMOU = () => {
 
             {/* Benefits */}
             <div>
-              <h2 className="text-xl font-semibold text-secondary-900 mb-6">
-                Key Benefits
-              </h2>
+              <h2 className="text-2xl font-semibold text-secondary-900 mb-6">Key Benefits</h2>
               <div className="space-y-4">
                 {formData.benefits.map((benefit, index) => (
                   <div key={index} className="flex items-center space-x-3">
@@ -347,16 +411,16 @@ const CreateMOU = () => {
                       type="text"
                       value={benefit}
                       onChange={(e) => handleBenefitChange(index, e.target.value)}
-                      className="input-field flex-1"
+                      className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                       placeholder={`Benefit ${index + 1}`}
                     />
                     {formData.benefits.length > 1 && (
                       <button
                         type="button"
                         onClick={() => removeBenefit(index)}
-                        className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-3 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
                       >
-                        <FiX className="w-4 h-4" />
+                        <FiX className="w-5 h-5" />
                       </button>
                     )}
                   </div>
@@ -364,121 +428,160 @@ const CreateMOU = () => {
                 <button
                   type="button"
                   onClick={addBenefit}
-                  className="btn-secondary text-sm"
+                  className="btn-secondary"
                 >
                   Add Another Benefit
                 </button>
               </div>
             </div>
 
-            {/* File Uploads */}
+            {/* Company Logo */}
             <div>
-              <h2 className="text-xl font-semibold text-secondary-900 mb-6 flex items-center">
-                <FiUpload className="w-5 h-5 mr-2 text-primary-600" />
-                Documents & Images
+              <h2 className="text-2xl font-semibold text-secondary-900 mb-6 flex items-center">
+                <FiUpload className="w-6 h-6 mr-3 text-primary-600" />
+                Company Logo
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Company Logo */}
-                <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
-                    Company Logo
-                  </label>
-                  <div className="border-2 border-dashed border-secondary-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors">
-                    {formData.companyLogo ? (
-                      <div className="space-y-3">
-                        <img
-                          src={formData.companyLogo}
-                          alt="Company logo"
-                          className="max-h-32 mx-auto object-contain"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setFormData(prev => ({ ...prev, companyLogo: '' }))}
-                          className="text-red-600 hover:text-red-700 text-sm"
-                        >
-                          Remove Logo
-                        </button>
-                      </div>
-                    ) : (
-                      <div>
-                        <FiUpload className="w-8 h-8 text-secondary-400 mx-auto mb-2" />
-                        <p className="text-sm text-secondary-600 mb-2">Upload company logo</p>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files[0];
-                            if (file) handleImageUpload(file, 'companyLogo');
-                          }}
-                          className="hidden"
-                          id="companyLogo"
-                        />
-                        <label htmlFor="companyLogo" className="btn-secondary text-sm cursor-pointer">
-                          {uploading ? 'Uploading...' : 'Choose File'}
-                        </label>
-                      </div>
-                    )}
+              
+              <div className="border-2 border-dashed border-secondary-300 rounded-xl p-8 text-center">
+                {formData.companyLogo ? (
+                  <div className="space-y-4">
+                    <img
+                      src={formData.companyLogo}
+                      alt="Company logo"
+                      className="max-h-48 mx-auto object-contain rounded-lg shadow-md"
+                    />
+                    <p className="text-sm text-green-600 mb-4 font-medium">✅ Company logo uploaded successfully</p>
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, companyLogo: '' }))}
+                      className="text-red-600 hover:text-red-700 font-medium"
+                    >
+                      Remove Logo
+                    </button>
                   </div>
-                </div>
+                ) : (
+                  <div>
+                    <FiUpload className="w-16 h-16 text-secondary-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-secondary-700 mb-2">Upload Company Logo</h3>
+                    <p className="text-secondary-500 mb-6">
+                      Upload a clear logo of the company (JPG, PNG, WebP)
+                    </p>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleLogoUpload}
+                      className="hidden"
+                      id="logo-upload"
+                      disabled={uploadingLogo}
+                    />
+                    <label
+                      htmlFor="logo-upload"
+                      className="btn-primary cursor-pointer inline-flex items-center"
+                    >
+                      {uploadingLogo ? (
+                        <>
+                          <div className="loading-spinner mr-2"></div>
+                          Uploading...
+                        </>
+                      ) : (
+                        <>
+                          <FiUpload className="w-4 h-4 mr-2" />
+                          Choose Logo
+                        </>
+                      )}
+                    </label>
+                    <p className="text-xs text-secondary-400 mt-2">
+                      Maximum file size: 5MB
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
 
-                {/* MOU Document */}
-                <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">
-                    MOU Document (PDF)
-                  </label>
-                  <div className="border-2 border-dashed border-secondary-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors">
-                    {formData.mouDocument ? (
-                      <div className="space-y-3">
-                        <div className="text-green-600">
-                          <FiUpload className="w-8 h-8 mx-auto mb-2" />
-                          <p className="text-sm">Document uploaded successfully</p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setFormData(prev => ({ ...prev, mouDocument: '' }))}
-                          className="text-red-600 hover:text-red-700 text-sm"
-                        >
-                          Remove Document
-                        </button>
-                      </div>
-                    ) : (
-                      <div>
-                        <FiUpload className="w-8 h-8 text-secondary-400 mx-auto mb-2" />
-                        <p className="text-sm text-secondary-600 mb-2">Upload MOU document</p>
-                        <input
-                          type="file"
-                          accept=".pdf,.doc,.docx"
-                          onChange={(e) => {
-                            const file = e.target.files[0];
-                            if (file) handleImageUpload(file, 'mouDocument');
-                          }}
-                          className="hidden"
-                          id="mouDocument"
-                        />
-                        <label htmlFor="mouDocument" className="btn-secondary text-sm cursor-pointer">
-                          {uploading ? 'Uploading...' : 'Choose File'}
-                        </label>
-                      </div>
-                    )}
+            {/* MOU Document */}
+            <div>
+              <h2 className="text-2xl font-semibold text-secondary-900 mb-6">MOU Document (Optional)</h2>
+              
+              <div className="border-2 border-dashed border-secondary-300 rounded-xl p-8 text-center">
+                {formData.mouDocument ? (
+                  <div className="space-y-4">
+                    <div className="text-green-600">
+                      <FiUpload className="w-16 h-16 mx-auto mb-4" />
+                      <p className="text-lg font-semibold">✅ Document uploaded successfully</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, mouDocument: '' }))}
+                      className="text-red-600 hover:text-red-700 font-medium"
+                    >
+                      Remove Document
+                    </button>
                   </div>
-                </div>
+                ) : (
+                  <div>
+                    <FiUpload className="w-16 h-16 text-secondary-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-secondary-700 mb-2">Upload MOU Document</h3>
+                    <p className="text-secondary-500 mb-6">
+                      Upload the official MOU document (PDF, DOC, DOCX)
+                    </p>
+                    <input
+                      type="file"
+                      accept=".pdf,.doc,.docx"
+                      onChange={handleDocumentUpload}
+                      className="hidden"
+                      id="document-upload"
+                      disabled={uploadingDocument}
+                    />
+                    <label
+                      htmlFor="document-upload"
+                      className="btn-secondary cursor-pointer inline-flex items-center"
+                    >
+                      {uploadingDocument ? (
+                        <>
+                          <div className="loading-spinner mr-2"></div>
+                          Uploading...
+                        </>
+                      ) : (
+                        <>
+                          <FiUpload className="w-4 h-4 mr-2" />
+                          Choose Document
+                        </>
+                      )}
+                    </label>
+                    <p className="text-xs text-secondary-400 mt-2">
+                      Maximum file size: 10MB
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Submit Buttons */}
-            <div className="flex items-center justify-end space-x-4 pt-6 border-t border-secondary-200">
+            <div className="flex justify-end space-x-4 pt-6 border-t border-secondary-200">
               <Link
                 to="/admin/mous"
-                className="btn-secondary"
+                className="btn-secondary px-6 py-3"
               >
                 Cancel
               </Link>
               <button
                 type="submit"
-                disabled={loading || uploading}
-                className="btn-primary"
+                disabled={loading || uploadingLogo || uploadingDocument}
+                className="btn-primary px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Creating MOU...' : 'Create MOU'}
+                {loading ? (
+                  <div className="flex items-center">
+                    <div className="loading-spinner mr-2"></div>
+                    Creating MOU...
+                  </div>
+                ) : uploadingLogo || uploadingDocument ? (
+                  <div className="flex items-center">
+                    <div className="loading-spinner mr-2"></div>
+                    Uploading Files...
+                  </div>
+                ) : (
+                  'Create MOU'
+                )}
               </button>
             </div>
           </form>
